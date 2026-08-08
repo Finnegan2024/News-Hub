@@ -8,6 +8,13 @@ const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
+// An idle pooled connection erroring (e.g. the DB restarting) emits 'error'
+// on the pool; without a listener, Node treats it as uncaught and crashes
+// the whole process. Log and let the pool reconnect on the next query.
+pool.on("error", (err) => {
+  console.error("Postgres pool idle client error:", err.message);
+});
+
 const isProduction = process.env.NODE_ENV === "production";
 
 export const sessionMiddleware = session({

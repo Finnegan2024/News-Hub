@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { sessionMiddleware } from "./lib/session.js";
 import { authRouter } from "./routes/auth.js";
+import { organizationsRouter } from "./routes/organizations.js";
 
 const app = express();
 const port = process.env.PORT ?? 4000;
@@ -21,6 +22,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/organizations", organizationsRouter);
 
 app.listen(port, () => {
   console.log(`NewsHub API listening on http://localhost:${port}`);

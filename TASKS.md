@@ -21,20 +21,20 @@ a browser until phase 4, but each is independently testable via API calls.
 
 ## Phase 2 — Organizations & follows
 
-- [ ] Extend `schema.prisma` with `Organization` and `UserOrganizationFollow` models from §4
-- [ ] Migration applied
-- [ ] Obtain a NewsAPI key, store as `NEWS_API_KEY` in `/api/.env` (never committed)
-- [ ] One-off script (`scripts/seed-organizations.ts` or similar) that calls NewsAPI
+- [x] Extend `schema.prisma` with `Organization` and `UserOrganizationFollow` models from §4
+- [x] Migration applied
+- [x] Obtain a NewsAPI key, store as `NEWS_API_KEY` in `/api/.env` (never committed)
+- [x] One-off script (`scripts/seed-organizations.ts` or similar) that calls NewsAPI
       `/v2/sources?category=general&language=en`, takes the first 5 results, and
       inserts them as `Organization` rows with `source_type: 'api'` and
       `source_config: { newsApiSourceId }`
-- [ ] Run the seed script against local Postgres, verify 5 rows exist
-- [ ] `GET /api/organizations` — list all, with `isFollowed` computed for the
+- [x] Run the seed script against local Postgres, verify 5 rows exist
+- [x] `GET /api/organizations` — list all, with `isFollowed` computed for the
       requesting user
-- [ ] `POST /api/organizations/:id/follow` — upsert `UserOrganizationFollow`
-- [ ] `DELETE /api/organizations/:id/follow` — remove the row (no-op if absent)
-- [ ] Manual smoke test: list orgs, follow 2, list again (isFollowed reflects it), unfollow 1
-- [ ] `/organizations` page in `/web`: list from the endpoint, follow/unfollow toggle button per row
+- [x] `POST /api/organizations/:id/follow` — upsert `UserOrganizationFollow`
+- [x] `DELETE /api/organizations/:id/follow` — remove the row (no-op if absent)
+- [x] Manual smoke test: list orgs, follow 2, list again (isFollowed reflects it), unfollow 1
+- [x] `/organizations` page in `/web`: list from the endpoint, follow/unfollow toggle button per row
 
 ## Phase 3 — Ingestion worker
 
