@@ -38,21 +38,21 @@ a browser until phase 4, but each is independently testable via API calls.
 
 ## Phase 3 — Ingestion worker
 
-- [ ] Extend `schema.prisma` with the `Article` model from §4, including the
+- [x] Extend `schema.prisma` with the `Article` model from §4, including the
       `UNIQUE (organization_id, external_id)` constraint
-- [ ] Migration applied
-- [ ] NewsAPI client module: given a `newsApiSourceId`, call
+- [x] Migration applied
+- [x] NewsAPI client module: given a `newsApiSourceId`, call
       `/v2/top-headlines?sources={id}`, return mapped `{title, description/summary, url, urlToImage, publishedAt}`
-- [ ] Ingestion function: for each seeded `Organization`, fetch articles, upsert
+- [x] Ingestion function: for each seeded `Organization`, fetch articles, upsert
       into `Article` keyed on `(organization_id, external_id)` where
       `external_id` = the article's `url`
-- [ ] Per-source try/catch so one failing source doesn't stop the others (§9)
-- [ ] `node-cron` (or equivalent) schedule running the ingestion function every
+- [x] Per-source try/catch so one failing source doesn't stop the others (§9)
+- [x] `node-cron` (or equivalent) schedule running the ingestion function every
       2 hours, started when the Express server boots (single-service topology
       per §2/§10.1 — no separate worker process)
-- [ ] Manual trigger path for local dev (e.g. an npm script or an internal-only
+- [x] Manual trigger path for local dev (e.g. an npm script or an internal-only
       endpoint) so you don't have to wait 2 hours to see articles land
-- [ ] Verify: run ingestion once locally, confirm `Article` rows appear for all
+- [x] Verify: run ingestion once locally, confirm `Article` rows appear for all
       5 organizations, re-run and confirm no duplicate rows (dedupe works)
 
 ## Phase 4 — Feed UI

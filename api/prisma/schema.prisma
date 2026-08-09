@@ -32,9 +32,28 @@ model Organization {
   logoUrl      String?    @map("logo_url")
   createdAt    DateTime   @default(now()) @map("created_at")
 
-  follows UserOrganizationFollow[]
+  follows  UserOrganizationFollow[]
+  articles Article[]
 
   @@map("organizations")
+}
+
+model Article {
+  id             String       @id @default(uuid())
+  organizationId String       @map("organization_id")
+  externalId     String       @map("external_id")
+  title          String
+  summary        String?
+  sourceUrl      String       @map("source_url")
+  imageUrl       String?      @map("image_url")
+  publishedAt    DateTime     @map("published_at")
+  fetchedAt      DateTime     @default(now()) @map("fetched_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, externalId])
+  @@index([organizationId, publishedAt(sort: Desc)])
+  @@map("articles")
 }
 
 model UserOrganizationFollow {
