@@ -89,10 +89,9 @@ a browser until phase 4, but each is independently testable via API calls.
       `read-events` call even if both triggers would otherwise fire
 - [x] Feed styling: visually distinguish read vs. unread cards (e.g. bold
       title + dot for unread, dimmed for read)
-- [ ] Manual smoke test: open a long article and scroll → marked read
+- [x] Manual smoke test: open a long article and scroll → marked read
       immediately; open a short article and wait 45s without scrolling →
       marked read at ~45s, not before
-      (backend logic verified via curl; still needs a real-browser pass — see below)
 
 ## Phase 6 — MVP hardening
 
