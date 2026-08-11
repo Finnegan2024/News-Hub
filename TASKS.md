@@ -95,11 +95,11 @@ a browser until phase 4, but each is independently testable via API calls.
 
 ## Phase 6 — MVP hardening
 
-- [ ] Rate-limit `/api/auth/register` and `/api/auth/login` (§9)
-- [ ] Confirm session cookie flags: `httpOnly`, `secure` in production,
+- [x] Rate-limit `/api/auth/register` and `/api/auth/login` (§9)
+- [x] Confirm session cookie flags: `httpOnly`, `secure` in production,
       `sameSite=lax`
-- [ ] Confirm ingestion failures are logged but don't crash the server process
-- [ ] Full manual golden-path run-through end to end: register → follow 5
+- [x] Confirm ingestion failures are logged but don't crash the server process
+- [x] Full manual golden-path run-through end to end: register → follow 5
       orgs → wait for (or manually trigger) ingestion → browse feed → read
       an article via both trigger paths → confirm read state persists on
       reload → logout → login again → state still correct

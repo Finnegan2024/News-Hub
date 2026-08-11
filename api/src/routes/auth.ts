@@ -1,6 +1,8 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma.js";
+import { asyncHandler } from "../lib/asyncHandler.js";
+import { authRateLimiter } from "../lib/rateLimit.js";
 
 export const authRouter = Router();
 
@@ -8,49 +10,57 @@ function isValidEmail(email: unknown): email is string {
   return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-authRouter.post("/register", async (req, res) => {
-  const { email, password } = req.body ?? {};
+authRouter.post(
+  "/register",
+  authRateLimiter,
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body ?? {};
 
-  if (!isValidEmail(email) || typeof password !== "string" || password.length < 8) {
-    return res.status(400).json({
-      error: "Email must be valid and password must be at least 8 characters.",
+    if (!isValidEmail(email) || typeof password !== "string" || password.length < 8) {
+      return res.status(400).json({
+        error: "Email must be valid and password must be at least 8 characters.",
+      });
+    }
+
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return res.status(409).json({ error: "An account with this email already exists." });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+    const user = await prisma.user.create({
+      data: { email, passwordHash },
     });
-  }
 
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    return res.status(409).json({ error: "An account with this email already exists." });
-  }
+    req.session.userId = user.id;
+    res.status(201).json({ id: user.id, email: user.email });
+  }),
+);
 
-  const passwordHash = await bcrypt.hash(password, 12);
-  const user = await prisma.user.create({
-    data: { email, passwordHash },
-  });
+authRouter.post(
+  "/login",
+  authRateLimiter,
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body ?? {};
 
-  req.session.userId = user.id;
-  res.status(201).json({ id: user.id, email: user.email });
-});
+    if (!isValidEmail(email) || typeof password !== "string") {
+      return res.status(400).json({ error: "Email and password are required." });
+    }
 
-authRouter.post("/login", async (req, res) => {
-  const { email, password } = req.body ?? {};
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid email or password." });
+    }
 
-  if (!isValidEmail(email) || typeof password !== "string") {
-    return res.status(400).json({ error: "Email and password are required." });
-  }
+    const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+    if (!passwordMatches) {
+      return res.status(401).json({ error: "Invalid email or password." });
+    }
 
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
-    return res.status(401).json({ error: "Invalid email or password." });
-  }
-
-  const passwordMatches = await bcrypt.compare(password, user.passwordHash);
-  if (!passwordMatches) {
-    return res.status(401).json({ error: "Invalid email or password." });
-  }
-
-  req.session.userId = user.id;
-  res.status(200).json({ id: user.id, email: user.email });
-});
+    req.session.userId = user.id;
+    res.status(200).json({ id: user.id, email: user.email });
+  }),
+);
 
 authRouter.post("/logout", (req, res) => {
   req.session.destroy((err) => {
@@ -62,15 +72,18 @@ authRouter.post("/logout", (req, res) => {
   });
 });
 
-authRouter.get("/me", async (req, res) => {
-  if (!req.session.userId) {
-    return res.status(401).json({ error: "Not authenticated." });
-  }
+authRouter.get(
+  "/me",
+  asyncHandler(async (req, res) => {
+    if (!req.session.userId) {
+      return res.status(401).json({ error: "Not authenticated." });
+    }
 
-  const user = await prisma.user.findUnique({ where: { id: req.session.userId } });
-  if (!user) {
-    return res.status(401).json({ error: "Not authenticated." });
-  }
+    const user = await prisma.user.findUnique({ where: { id: req.session.userId } });
+    if (!user) {
+      return res.status(401).json({ error: "Not authenticated." });
+    }
 
-  res.status(200).json({ id: user.id, email: user.email });
-});
+    res.status(200).json({ id: user.id, email: user.email });
+  }),
+);

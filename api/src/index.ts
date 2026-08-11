@@ -8,6 +8,7 @@ import { organizationsRouter } from "./routes/organizations.js";
 import { feedRouter } from "./routes/feed.js";
 import { articlesRouter } from "./routes/articles.js";
 import { ingestArticles } from "./lib/ingest.js";
+import { asyncHandler } from "./lib/asyncHandler.js";
 
 const app = express();
 const port = process.env.PORT ?? 4000;
@@ -33,10 +34,13 @@ app.use("/api/articles", articlesRouter);
 
 // Dev-only: trigger ingestion on demand instead of waiting for the cron tick.
 if (!isProduction) {
-  app.post("/api/internal/ingest", async (_req, res) => {
-    await ingestArticles();
-    res.status(204).send();
-  });
+  app.post(
+    "/api/internal/ingest",
+    asyncHandler(async (_req, res) => {
+      await ingestArticles();
+      res.status(204).send();
+    }),
+  );
 }
 
 // Single-service topology (§2/§10.1): ingestion runs in-process on the same
@@ -44,6 +48,17 @@ if (!isProduction) {
 cron.schedule("0 */2 * * *", () => {
   ingestArticles().catch((err) => console.error("Scheduled ingestion failed:", err));
 });
+
+// Final safety net: any error reaching here (via asyncHandler's next(err),
+// or a sync throw) is logged and answered with 500 instead of taking down
+// the process. Must be registered after all routes.
+app.use(
+  (err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error("Unhandled request error:", err);
+    if (res.headersSent) return;
+    res.status(500).json({ error: "Something went wrong." });
+  },
+);
 
 app.listen(port, () => {
   console.log(`NewsHub API listening on http://localhost:${port}`);
