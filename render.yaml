@@ -14,7 +14,11 @@ services:
     # makes plain `npm install` skip devDependencies — but tsc, prisma, and
     # the @types/* packages (all devDependencies) are needed to build here.
     buildCommand: npm install --include=dev && npx prisma generate && npm run build
-    startCommand: npx prisma migrate deploy && npm start
+    # seed:organizations is upsert-based (keyed on slug), so it's safe to
+    # run on every start — this is also how the 5 orgs get seeded in
+    # production at all, since the local-only seed script was never run
+    # against the Render database otherwise.
+    startCommand: npx prisma migrate deploy && npm run seed:organizations && npm start
     envVars:
       - key: NODE_ENV
         value: production

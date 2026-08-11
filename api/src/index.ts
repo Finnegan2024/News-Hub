@@ -14,6 +14,14 @@ const app = express();
 const port = process.env.PORT ?? 4000;
 const isProduction = process.env.NODE_ENV === "production";
 
+// Render (and most PaaS hosts) terminate TLS at a proxy and forward over
+// plain HTTP internally. Without this, req.secure is always false, so
+// express-session silently refuses to set the cookie (cookie.secure: true
+// requires req.secure) — logins would appear to succeed but never persist.
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
+
 app.use(
   cors({
     origin: process.env.WEB_ORIGIN,
