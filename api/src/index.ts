@@ -5,6 +5,8 @@ import cron from "node-cron";
 import { sessionMiddleware } from "./lib/session.js";
 import { authRouter } from "./routes/auth.js";
 import { organizationsRouter } from "./routes/organizations.js";
+import { feedRouter } from "./routes/feed.js";
+import { articlesRouter } from "./routes/articles.js";
 import { ingestArticles } from "./lib/ingest.js";
 
 const app = express();
@@ -26,6 +28,8 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/organizations", organizationsRouter);
+app.use("/api/feed", feedRouter);
+app.use("/api/articles", articlesRouter);
 
 // Dev-only: trigger ingestion on demand instead of waiting for the cron tick.
 if (!isProduction) {

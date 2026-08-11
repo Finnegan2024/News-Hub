@@ -57,18 +57,18 @@ a browser until phase 4, but each is independently testable via API calls.
 
 ## Phase 4 — Feed UI
 
-- [ ] `GET /api/feed?cursor=&limit=` — articles from the current user's
+- [x] `GET /api/feed?cursor=&limit=` — articles from the current user's
       followed organizations only, newest-first by `published_at`,
       cursor-paginated (§9)
-- [ ] `GET /api/articles/:id` — single article detail
-- [ ] `/feed` page in `/web`: fetch via TanStack Query, render article summary
+- [x] `GET /api/articles/:id` — single article detail
+- [x] `/feed` page in `/web`: fetch via TanStack Query, render article summary
       cards (title, summary, org name/logo, published date)
-- [ ] Infinite scroll / "load more" wired to the cursor param
-- [ ] Empty state: user has no follows yet → prompt to visit `/organizations`
+- [x] Infinite scroll / "load more" wired to the cursor param
+- [x] Empty state: user has no follows yet → prompt to visit `/organizations`
       (§10.1 — this is in-scope for MVP, not deferred)
-- [ ] Basic error state: feed fetch fails → show a retry-able error message
+- [x] Basic error state: feed fetch fails → show a retry-able error message
       instead of a blank screen
-- [ ] `/articles/:id` detail page: fetch and render full summary + link to
+- [x] `/articles/:id` detail page: fetch and render full summary + link to
       `source_url`
 - [ ] Manual smoke test: follow orgs → see their articles in feed → open one
 

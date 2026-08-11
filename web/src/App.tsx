@@ -1,8 +1,9 @@
-import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./pages/HomePage";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { OrganizationsPage } from "./pages/OrganizationsPage";
+import { FeedPage } from "./pages/FeedPage";
+import { ArticleDetailPage } from "./pages/ArticleDetailPage";
 import { RequireAuth } from "./components/RequireAuth";
 
 export default function App() {
@@ -10,11 +11,12 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/" element={<Navigate to="/feed" replace />} />
       <Route
-        path="/"
+        path="/feed"
         element={
           <RequireAuth>
-            <HomePage />
+            <FeedPage />
           </RequireAuth>
         }
       />
@@ -23,6 +25,14 @@ export default function App() {
         element={
           <RequireAuth>
             <OrganizationsPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/articles/:id"
+        element={
+          <RequireAuth>
+            <ArticleDetailPage />
           </RequireAuth>
         }
       />
