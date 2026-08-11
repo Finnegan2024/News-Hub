@@ -57,6 +57,14 @@ cron.schedule("0 */2 * * *", () => {
   ingestArticles().catch((err) => console.error("Scheduled ingestion failed:", err));
 });
 
+// The cron above only fires on 2-hour clock marks, so a fresh deploy would
+// otherwise sit with zero articles until the next one. Run once on boot too
+// — production only, since dev restarts on every file save and would
+// otherwise burn through NewsAPI's free-tier daily quota fast.
+if (isProduction) {
+  ingestArticles().catch((err) => console.error("Startup ingestion failed:", err));
+}
+
 // Final safety net: any error reaching here (via asyncHandler's next(err),
 // or a sync throw) is logged and answered with 500 instead of taking down
 // the process. Must be registered after all routes.
