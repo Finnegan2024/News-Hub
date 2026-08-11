@@ -39,9 +39,17 @@ export function FeedPage() {
         {articles.length > 0 && (
           <ul>
             {articles.map((article) => (
-              <li key={article.id}>
+              <li
+                key={article.id}
+                className={article.isRead ? "feed-item feed-item--read" : "feed-item feed-item--unread"}
+              >
                 <Link to={`/articles/${article.id}`}>
-                  <h2>{article.title}</h2>
+                  <h2>
+                    {!article.isRead && (
+                      <span className="unread-dot" aria-label="Unread" />
+                    )}
+                    {article.title}
+                  </h2>
                 </Link>
                 <p>
                   {article.organization.name} ·{" "}

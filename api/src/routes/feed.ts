@@ -26,6 +26,7 @@ feedRouter.get("/", async (req, res) => {
     ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     include: {
       organization: { select: { id: true, name: true, logoUrl: true } },
+      readEvents: { where: { userId }, select: { userId: true } },
     },
   });
 
@@ -41,6 +42,7 @@ feedRouter.get("/", async (req, res) => {
       imageUrl: article.imageUrl,
       publishedAt: article.publishedAt,
       organization: article.organization,
+      isRead: article.readEvents.length > 0,
     })),
     nextCursor: hasMore ? page[page.length - 1].id : null,
   });

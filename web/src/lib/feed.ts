@@ -6,6 +6,8 @@ export interface FeedOrganization {
   logoUrl: string | null;
 }
 
+export type ReadTrigger = "scrolled" | "dwell_45s";
+
 export interface FeedArticle {
   id: string;
   title: string;
@@ -14,6 +16,7 @@ export interface FeedArticle {
   imageUrl: string | null;
   publishedAt: string;
   organization: FeedOrganization;
+  isRead: boolean;
 }
 
 export interface FeedPage {
@@ -30,4 +33,11 @@ export function fetchFeed(cursor?: string): Promise<FeedPage> {
 
 export function fetchArticle(id: string): Promise<FeedArticle> {
   return apiFetch<FeedArticle>(`/articles/${id}`);
+}
+
+export function postReadEvent(articleId: string, trigger: ReadTrigger): Promise<void> {
+  return apiFetch<void>(`/articles/${articleId}/read-events`, {
+    method: "POST",
+    body: JSON.stringify({ trigger }),
+  });
 }

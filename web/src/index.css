@@ -109,3 +109,26 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+.feed-item {
+  text-align: left;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.feed-item--unread h2 {
+  font-weight: 700;
+}
+
+.feed-item--read {
+  opacity: 0.6;
+}
+
+.unread-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 8px;
+}

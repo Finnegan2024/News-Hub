@@ -1,10 +1,14 @@
 import { Link, useParams } from "react-router-dom";
 import { AppHeader } from "../components/AppHeader";
 import { useArticle } from "../hooks/useFeed";
+import { useReadTracking } from "../hooks/useReadTracking";
 
 export function ArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: article, isPending, isError } = useArticle(id as string);
+  const articleId = id as string;
+  const { data: article, isPending, isError } = useArticle(articleId);
+
+  useReadTracking(articleId, !isPending && !!article, article?.isRead ?? false);
 
   return (
     <>

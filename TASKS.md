@@ -6,18 +6,18 @@ a browser until phase 4, but each is independently testable via API calls.
 
 ## Phase 1 — Foundation
 
-- [ ] `git init`, base repo structure: `/api` (Express) and `/web` (Vite React), or a monorepo layout — pick one and note it in SPEC.md if it deviates from a flat two-folder split
-- [ ] `docker-compose.yml` for local Postgres
-- [ ] Prisma installed in `/api`, `schema.prisma` with `User` and `Session` models from §4
-- [ ] `prisma migrate dev` — first migration applies cleanly
-- [ ] Express app skeleton: JSON body parsing, cookie-session middleware backed by `connect-pg-simple` (or equivalent) pointed at Postgres
-- [ ] `POST /api/auth/register` — hash password (bcrypt/argon2), create `User`, start session
-- [ ] `POST /api/auth/login` — verify password, start session
-- [ ] `POST /api/auth/logout` — destroy session
-- [ ] `GET /api/auth/me` — return current user from session, 401 if none
-- [ ] Auth middleware that 401s protected routes when no session
-- [ ] Manual smoke test: register → login → me → logout, via curl/Postman
-- [ ] `/web` skeleton: Vite + React + TypeScript + React Router + TanStack Query, base routing shell for `/register`, `/login`
+- [x] `git init`, base repo structure: `/api` (Express) and `/web` (Vite React), or a monorepo layout — pick one and note it in SPEC.md if it deviates from a flat two-folder split
+- [x] `docker-compose.yml` for local Postgres
+- [x] Prisma installed in `/api`, `schema.prisma` with `User` and `Session` models from §4
+- [x] `prisma migrate dev` — first migration applies cleanly
+- [x] Express app skeleton: JSON body parsing, cookie-session middleware backed by `connect-pg-simple` (or equivalent) pointed at Postgres
+- [x] `POST /api/auth/register` — hash password (bcrypt/argon2), create `User`, start session
+- [x] `POST /api/auth/login` — verify password, start session
+- [x] `POST /api/auth/logout` — destroy session
+- [x] `GET /api/auth/me` — return current user from session, 401 if none
+- [x] Auth middleware that 401s protected routes when no session
+- [x] Manual smoke test: register → login → me → logout, via curl/Postman
+- [x] `/web` skeleton: Vite + React + TypeScript + React Router + TanStack Query, base routing shell for `/register`, `/login`
 
 ## Phase 2 — Organizations & follows
 
@@ -74,24 +74,25 @@ a browser until phase 4, but each is independently testable via API calls.
 
 ## Phase 5 — Read/unread tracking
 
-- [ ] Extend `schema.prisma` with the `ReadEvent` model from §4
-- [ ] Migration applied
-- [ ] `POST /api/articles/:id/read-events` — upsert on `(user_id, article_id)`,
+- [x] Extend `schema.prisma` with the `ReadEvent` model from §4
+- [x] Migration applied
+- [x] `POST /api/articles/:id/read-events` — upsert on `(user_id, article_id)`,
       idempotent, first `read_at`/`trigger` wins
-- [ ] Feed and article-detail endpoints include `isRead` (presence of a
+- [x] Feed and article-detail endpoints include `isRead` (presence of a
       `ReadEvent` row) per §6
-- [ ] Detail page: scroll listener (>50px threshold) fires the read-event once,
+- [x] Detail page: scroll listener (>50px threshold) fires the read-event once,
       then detaches
-- [ ] Detail page: 45s dwell timer starts on mount, fires the read-event if it
+- [x] Detail page: 45s dwell timer starts on mount, fires the read-event if it
       completes before the scroll trigger does, pauses on `visibilitychange`
       when the tab is backgrounded
-- [ ] Client-side dedupe so a single article view fires at most one
+- [x] Client-side dedupe so a single article view fires at most one
       `read-events` call even if both triggers would otherwise fire
-- [ ] Feed styling: visually distinguish read vs. unread cards (e.g. bold
+- [x] Feed styling: visually distinguish read vs. unread cards (e.g. bold
       title + dot for unread, dimmed for read)
 - [ ] Manual smoke test: open a long article and scroll → marked read
       immediately; open a short article and wait 45s without scrolling →
       marked read at ~45s, not before
+      (backend logic verified via curl; still needs a real-browser pass — see below)
 
 ## Phase 6 — MVP hardening
 
