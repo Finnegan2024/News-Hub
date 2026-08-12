@@ -26,7 +26,14 @@ export const sessionMiddleware = session({
   cookie: {
     httpOnly: true,
     secure: isProduction,
-    sameSite: "lax",
+    // The deployed frontend and API live on different onrender.com
+    // subdomains, which browsers treat as cross-site — SameSite=Lax cookies
+    // aren't attached to cross-site fetch()/XHR calls (only top-level
+    // navigations), so every authenticated request after login would
+    // silently drop the cookie and 401. SameSite=None (requires Secure,
+    // already true in production) fixes this. Lax is kept for local dev,
+    // where frontend/API share "localhost" as their site.
+    sameSite: isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   },
 });

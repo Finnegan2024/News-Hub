@@ -97,7 +97,11 @@ a browser until phase 4, but each is independently testable via API calls.
 
 - [x] Rate-limit `/api/auth/register` and `/api/auth/login` (§9)
 - [x] Confirm session cookie flags: `httpOnly`, `secure` in production,
-      `sameSite=lax`
+      `sameSite=lax` in dev / `sameSite=none` in prod (see SPEC.md §9 — a
+      real cross-subdomain browser test caught that `lax` silently drops
+      the cookie on every fetch() call once frontend and API are split
+      across different onrender.com subdomains; curl-based testing couldn't
+      catch this since it doesn't enforce SameSite policy)
 - [x] Confirm ingestion failures are logged but don't crash the server process
 - [x] Full manual golden-path run-through end to end: register → follow 5
       orgs → wait for (or manually trigger) ingestion → browse feed → read

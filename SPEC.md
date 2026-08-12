@@ -232,7 +232,10 @@ Implementation notes:
 ## 9. Non-functional requirements
 
 - Passwords hashed with bcrypt/argon2, never logged.
-- Session cookies: `httpOnly`, `secure` (in prod), `sameSite=lax`.
+- Session cookies: `httpOnly`, `secure` (in prod), `sameSite=lax` in dev /
+  `sameSite=none` in prod (frontend and API deploy to different subdomains,
+  which browsers treat as cross-site — `lax` cookies aren't attached to
+  cross-site `fetch()` calls, only top-level navigations).
 - Rate-limit `/api/auth/*` to mitigate credential stuffing.
 - Feed queries paginated (cursor-based on `published_at`) — never load an
   unbounded article list.
