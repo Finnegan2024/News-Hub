@@ -103,10 +103,10 @@ a browser until phase 4, but each is independently testable via API calls.
       orgs → wait for (or manually trigger) ingestion → browse feed → read
       an article via both trigger paths → confirm read state persists on
       reload → logout → login again → state still correct
-- [ ] Render deployment: one Web Service (API + in-process cron) + Render
+- [x] Render deployment: one Web Service (API + in-process cron) + Render
       Postgres + Static Site for `/web`; `NEWS_API_KEY` and session-secret
       env vars set in the Render dashboard, not committed
-- [ ] Post-deploy smoke test of the same golden path against the live Render URL
+- [x] Post-deploy smoke test of the same golden path against the live Render URL
 
 ## Explicitly not on this list
 
